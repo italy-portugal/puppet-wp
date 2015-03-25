@@ -1,14 +1,13 @@
 define wp::plugin (
 	$slug = $title,
 	$location,
-	$ensure = enabled,
+	$ensure = 'enabled',
 	$networkwide = false
 ) {
 	include wp::cli
 
 	case $ensure {
-		enabled: {
-			$command = "activate $slug"
+		'enabled': {
 
 			exec { "wp install plugin $title":
 				cwd     => $location,
@@ -18,8 +17,10 @@ define wp::plugin (
 				require => Class["wp::cli"],
 				onlyif  => "/usr/bin/wp core is-installed"
 			}
+
+			$command = "install $slug --activate"
 		}
-		disabled: {
+		'disabled': {
 			$command = "deactivate $slug"
 		}
 		default: {
