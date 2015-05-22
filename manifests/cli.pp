@@ -43,7 +43,7 @@ class wp::cli (
 		file { "/usr/bin/wp":
 			ensure => absent,
 		}
-		file { "/usr/local/src/wp-cli":
+		file { $install_path:
 			ensure => absent,
 		}
 	}
