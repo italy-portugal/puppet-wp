@@ -1,40 +1,47 @@
-define wp::plugin (
-	$slug = $title,
-	$location,
-	$ensure = enabled,
-	$networkwide = false
-) {
-	include wp::cli
+define wp::plugin
+(
+    $slug = $title,
+    $location = $::wp::location,
+    $ensure = enabled,
+    $networkwide = false,
+    $user = undef
+)
+{
+    include ::wp::cli
+    include ::wp::params
 
-	case $ensure {
-		enabled: {
-			$command = "activate $slug"
+    $basecmd = "${::wp::params::wp} plugin ${::wp::params::args}"
 
-			exec { "wp install plugin $title":
-				cwd     => $location,
-				command => "/usr/bin/wp plugin install $slug",
-				unless  => "/usr/bin/wp plugin is-installed $slug",
-				before  => Wp::Command["$location plugin $slug $ensure"],
-				require => Class["wp::cli"],
-				onlyif  => "/usr/bin/wp core is-installed"
-			}
-		}
-		disabled: {
-			$command = "deactivate $slug"
-		}
-		default: {
-			fail("Invalid ensure for wp::plugin")
-		}
-	}
+    $extra_args = $networkwide ? {
+        true  => '--network',
+        false => undef,
+    }
 
-	if $networkwide {
-		$args = "plugin $command --network"
-	}
-	else {
-		$args = "plugin $command"
-	}
-	wp::command { "$location plugin $slug $ensure":
-		location => $location,
-		command => $args
-	}
+    Exec {
+        cwd => $location,
+        require => Class['::wp::cli'],
+        onlyif => "${::wp::params::core_is_installed}",
+    }
+
+    case $ensure {
+        enabled: {
+            exec { "wp install plugin ${slug}":
+                command => "${basecmd} install ${slug}",
+                unless  => "${basecmd} is-installed ${slug}",
+                before  => Exec["wp activate plugin ${slug}"],
+            }
+            exec { "wp activate plugin ${slug}":
+                command => "${basecmd} ${extra_args} activate ${slug}",
+                unless  => "${basecmd} status ${slug}|grep \"Status: Active\"",
+            }
+        }
+        disabled: {
+            exec { "wp deactivate plugin ${slug}":
+                command => "${basecmd} ${extra_args} deactivate ${slug}",
+            }
+        }
+        default: {
+            fail("Invalid ensure for ::wp::plugin")
+        }
+    }
 }

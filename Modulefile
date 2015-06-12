@@ -1,5 +1,5 @@
 name    'rmccue-wp'
-version '1.0.1'
+version '1.0.2'
 author 'Ryan McCue'
 license 'MIT License'
 summary 'Manage your WordPress installations with wp-cli'
