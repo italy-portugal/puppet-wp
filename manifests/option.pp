@@ -24,10 +24,13 @@ define wp::option
         }
         equal: {
             if $value == undef {
-                fail('Option value must be specified')
-        }
-            exec { "wp option update ${key} ${value}":
-                command => "${basecmd} update ${key} ${value}"
+                exec { "wp option get ${key}":
+                    command => "${basecmd} get ${key}"
+                }
+            } else {
+                exec { "wp option update ${key} ${value}":
+                    command => "${basecmd} update ${key} ${value}"
+                }
             }
         }
         absent: {
