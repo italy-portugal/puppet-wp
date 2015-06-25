@@ -1,3 +1,8 @@
+#
+# == Define: wp::plugin
+#
+# Enable or disable a Wordpress plugin
+#
 define wp::plugin
 (
     $slug = $title,
