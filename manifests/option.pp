@@ -29,7 +29,7 @@ define wp::option
                 }
             } else {
                 exec { "wp option update ${key} ${value}":
-                    command => "${basecmd} update ${key} ${value}"
+                    command => "${basecmd} update ${key} \"${value}\""
                 }
             }
         }
