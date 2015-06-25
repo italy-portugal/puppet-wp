@@ -17,20 +17,9 @@ define wp::option
     }
 
     case $ensure {
-        present: {
-            exec { "wp option get ${key}":
-                command => "${basecmd} get ${key}"
-            }
-        }
         equal: {
-            if $value == undef {
-                exec { "wp option get ${key}":
-                    command => "${basecmd} get ${key}"
-                }
-            } else {
-                exec { "wp option update ${key} ${value}":
-                    command => "${basecmd} update ${key} \"${value}\""
-                }
+            exec { "wp option update ${key} ${value}":
+                command => "${basecmd} update ${key} \"${value}\""
             }
         }
         absent: {
