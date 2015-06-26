@@ -1,0 +1,11 @@
+{
+  "name": "puppetfinland-wp",
+  "version": "1.0.3",
+  "author": "Puppet-Finland team, Ryan McCue",
+  "license": "MIT License",
+  "summary": "This module manages your WordPress sites using wp-cli, allowing you to install your site, manage plugins, and update options. This module is a fork of the rmccue-wp module.",
+  "source": "https://github.com/Puppet-Finland/wp.git",
+  "project_page": "https://github.com/Puppet-Finland/wp",
+  "dependencies": [
+  ]
+}
