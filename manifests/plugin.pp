@@ -15,7 +15,7 @@ define wp::plugin (
 				unless  => "/usr/bin/wp plugin is-installed $slug",
 				before  => Wp::Command["$location plugin $slug $ensure"],
 				require => Class["wp::cli"],
-				onlyif  => "/usr/bin/wp core is-installed"
+				onlyif  => "/usr/bin/wp core is-installed",
 			}
 
 			$command = "install $slug --activate"
