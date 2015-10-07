@@ -2,7 +2,7 @@
 define wp::command (
   $location,
   $command,
-  $onlyif = '/usr/bin/wp --version'
+  $onlyif = '--version'
 ) {
   include wp::cli
 
@@ -11,6 +11,6 @@ define wp::command (
     cwd     => $location,
     user    => $::wp::user,
     require => [ Class['wp::cli'] ],
-    onlyif  => ['/usr/bin/wp core is-installed',$onlyif]
+    onlyif  => ['/usr/bin/wp core is-installed',"/usr/bin/wp $onlyif"]
   }
 }
