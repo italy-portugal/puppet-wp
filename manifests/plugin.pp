@@ -9,20 +9,20 @@ define wp::plugin (
 
   case $ensure {
     'enabled': {
-
-      exec { "wp install plugin ${title}":
-        cwd     => $location,
-        command => "/usr/bin/wp plugin install ${slug}",
-        unless  => "/usr/bin/wp plugin is-installed ${slug}",
-        before  => Wp::Command["${location} plugin ${slug} ${ensure}"],
-        require => Class['wp::cli'],
-        onlyif  => '/usr/bin/wp core is-installed',
-      }
-
       $command = "install ${slug} --activate"
+      $unless = "/usr/bin/wp plugin is-installed ${slug}"
     }
     'disabled': {
       $command = "deactivate ${slug}"
+      $onlyif = "/usr/bin/wp plugin is-installed ${slug}"
+    }
+    'purged': {
+      $command = "delete ${slug}"
+      $onlyif = "/usr/bin/wp plugin is-installed ${slug}"
+    }
+    'present': {
+      $command = "install ${slug}"
+      $unless = "/usr/bin/wp plugin is-installed${slug}"
     }
     default: {
       fail('Invalid ensure for wp::plugin')
@@ -35,8 +35,10 @@ define wp::plugin (
   else {
     $args = "plugin ${command}"
   }
-  wp::command { "${location} plugin ${slug} ${ensure}":
-    location => $location,
-    command  => $args,
+
+  exec { "${location} plugin ${slug} ${ensure}":
+    command => '/usr/bin/wp $args',
+    unless  => $unless,
+    onlyif  => [$onlyif,'/usr/bin/wp core is-installed'],
   }
 }
