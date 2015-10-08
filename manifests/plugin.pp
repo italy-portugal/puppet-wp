@@ -20,10 +20,6 @@ define wp::plugin (
       $command = "delete ${slug}"
       $onlyif = "/usr/bin/wp plugin is-installed ${slug}"
     }
-    'present': {
-      $command = "install ${slug}"
-      $unless = "/usr/bin/wp plugin is-installed${slug}"
-    }
     default: {
       fail('Invalid ensure for wp::plugin')
     }
@@ -36,9 +32,17 @@ define wp::plugin (
     $args = "plugin ${command}"
   }
 
+if $unless {
   exec { "${location} plugin ${slug} ${ensure}":
     command => '/usr/bin/wp $args',
     unless  => $unless,
+    onlyif  => '/usr/bin/wp core is-installed',
+  }
+} elsif $onlyif {
+  exec { "${location} plugin ${slug} ${ensure}":
+    command => '/usr/bin/wp $args',
     onlyif  => [$onlyif,'/usr/bin/wp core is-installed'],
   }
+}
+
 }
