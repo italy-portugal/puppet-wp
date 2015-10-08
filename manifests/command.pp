@@ -2,6 +2,7 @@
 define wp::command (
   $location,
   $command,
+  $refreshonly = false,
 ) {
   include wp::cli
 
@@ -11,6 +12,7 @@ define wp::command (
     user    => $::wp::user,
     require => [ Class['wp::cli'] ],
     onlyif  => '/usr/bin/wp core is-installed',
+    refreshonly => $refreshonly,
   }
 
 
