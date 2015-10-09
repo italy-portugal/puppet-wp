@@ -30,18 +30,18 @@ define wp::plugin
 
     case $ensure {
         enabled: {
-            exec { "wp install plugin ${slug}":
+            exec { "${location} wp install plugin ${slug}":
                 command => "${basecmd} install ${slug}",
                 unless  => "${basecmd} is-installed ${slug}",
-                before  => Exec["wp activate plugin ${slug}"],
+                before  => Exec["${location} wp activate plugin ${slug}"],
             }
-            exec { "wp activate plugin ${slug}":
+            exec { "${location} wp activate plugin ${slug}":
                 command => "${basecmd} ${extra_args} activate ${slug}",
                 unless  => "${basecmd} status ${slug}|grep \"Status: Active\"",
             }
         }
         disabled: {
-            exec { "wp deactivate plugin ${slug}":
+            exec { "${location} wp deactivate plugin ${slug}":
                 command => "${basecmd} ${extra_args} deactivate ${slug}",
             }
         }
