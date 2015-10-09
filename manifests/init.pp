@@ -1,7 +1,7 @@
 class wp
 (
     $user = $::wp::params::user,
-    $location
+    $location = '/var/www/wordpress'
 
 ) inherits wp::params
 {
