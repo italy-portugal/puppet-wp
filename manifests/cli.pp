@@ -29,7 +29,7 @@ class wp::cli (
 		file { "$install_path/bin/wp":
 			ensure => "present",
 			mode => "a+x",
-			#require => Exec[ 'wp-cli download' ]
+			require => Exec[ 'wp-cli download' ]
 		}
 
 		# Symlink it across
